@@ -53,3 +53,57 @@ taxes = [
     {"department": "IT Department", "name": "hiring", "value_percents": 6},
     {"department": "BizDev Department", "name": "sales", "value_percents": 20},
 ]
+
+
+# Задание 1. Вывести названия всех отделов
+
+name_department = [every_depart['title'] for every_depart in departments]
+print(name_department)
+
+# Задание 2. Вывести имена всех сотрудников компании.
+
+all_name = [
+            one_employer['first_name'] for every_depart in departments 
+            for one_employer in every_depart['employers']
+            ]
+print(all_name)
+
+# Задание 3. Вывести имена всех сотрудников компании с указанием отдела, в котором они работают.
+
+show_name_with_depart = []
+for every_depart in departments:
+    for one_employer in every_depart['employers']:
+        temp_dict = {}
+        temp_dict[one_employer['first_name']] = every_depart['title']
+        show_name_with_depart.append(temp_dict)
+
+print(show_name_with_depart)
+
+# Задание 4. Вывести имена всех сотрудников компании, которые получают больше 100к.
+
+name_with_salary_off_100k = [
+                              one_employer['first_name'] for every_depart in departments 
+                              for one_employer in every_depart['employers'] 
+                              if one_employer['salary_rub'] > 100000
+                              ]
+
+print(name_with_salary_off_100k)
+
+# Задание 5. Вывести позиции, на которых люди получают меньше 80к (можно с повторениями).
+
+position_with_salary_before_80k = [
+                                    one_employer['position'] for every_depart in departments
+                                    for one_employer in every_depart['employers']
+                                    if one_employer['salary_rub'] < 80000
+                                    ]
+
+print(position_with_salary_before_80k)
+
+# Задание 6. Посчитать, сколько денег в месяц уходит на каждый отдел – и вывести вместе с названием отдела
+
+sum_salary_in_depart = {}
+for every_depart in departments:
+    sum_one_depart = sum([ one_man['salary_rub'] for one_man in every_depart['employers']], 0)
+    sum_salary_in_depart[every_depart['title']] = sum_one_depart
+
+print(sum_salary_in_depart)
