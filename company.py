@@ -57,53 +57,122 @@ taxes = [
 
 # Задание 1. Вывести названия всех отделов
 
-name_department = [every_depart['title'] for every_depart in departments]
-print(name_department)
+
+for every_depart in departments:
+    print(every_depart['title'])
 
 # Задание 2. Вывести имена всех сотрудников компании.
 
-all_name = [
-            one_employer['first_name'] for every_depart in departments 
-            for one_employer in every_depart['employers']
-            ]
-print(all_name)
+
+for every_depart in departments:
+    for one_employer in every_depart['employers']:
+        print(one_employer['first_name'])
+
 
 # Задание 3. Вывести имена всех сотрудников компании с указанием отдела, в котором они работают.
 
-show_name_with_depart = []
 for every_depart in departments:
     for one_employer in every_depart['employers']:
         temp_dict = {}
         temp_dict[one_employer['first_name']] = every_depart['title']
-        show_name_with_depart.append(temp_dict)
+        print(temp_dict)
 
-print(show_name_with_depart)
 
 # Задание 4. Вывести имена всех сотрудников компании, которые получают больше 100к.
 
-name_with_salary_off_100k = [
-                              one_employer['first_name'] for every_depart in departments 
-                              for one_employer in every_depart['employers'] 
-                              if one_employer['salary_rub'] > 100000
-                              ]
+for every_depart in departments:
+    for one_employer in every_depart['employers']:
+        if one_employer['salary_rub'] > 100000:
+            print(one_employer['first_name'])
 
-print(name_with_salary_off_100k)
 
 # Задание 5. Вывести позиции, на которых люди получают меньше 80к (можно с повторениями).
 
-position_with_salary_before_80k = [
-                                    one_employer['position'] for every_depart in departments
-                                    for one_employer in every_depart['employers']
-                                    if one_employer['salary_rub'] < 80000
-                                    ]
+for every_depart in departments:
+    for one_employer in every_depart['employers']:
+        if one_employer['salary_rub'] < 80000:
+            print(one_employer['position'])
 
-print(position_with_salary_before_80k)
 
 # Задание 6. Посчитать, сколько денег в месяц уходит на каждый отдел – и вывести вместе с названием отдела
 
-sum_salary_in_depart = {}
 for every_depart in departments:
+    sum_salary_in_depart = {}
     sum_one_depart = sum([ one_man['salary_rub'] for one_man in every_depart['employers']], 0)
     sum_salary_in_depart[every_depart['title']] = sum_one_depart
+    print(sum_salary_in_depart)
 
-print(sum_salary_in_depart)
+
+# Второй уровень:
+
+# Задание 7. Вывести названия отделов с указанием минимальной зарплаты в нём.
+
+for every_depart in departments:
+    name_depart = every_depart['title']
+    all_salary_in_depart = [one_employer['salary_rub'] for one_employer in every_depart['employers']]
+    min_salary = min(all_salary_in_depart)
+    print(f'{name_depart} минимальная зарплата {min_salary}')
+        
+
+# Задание 8. Вывести названия отделов с указанием минимальной, средней и максимальной зарплаты в нём.
+
+for every_depart in departments:
+    name_depart = every_depart['title']
+    all_salary_in_depart = [one_employer['salary_rub'] for one_employer in every_depart['employers']]
+    min_salary = min(all_salary_in_depart)
+    avg_salary = round(sum(all_salary_in_depart)/len(all_salary_in_depart), 1)
+    max_salary = max(all_salary_in_depart)
+
+    print(name_depart)
+    print(f'Минимальная зарплата {min_salary}')
+    print(f'Средняя зарплата {avg_salary}')
+    print(f'Максимальная зарплата {max_salary}')
+
+
+# Задание 9. Вывести среднюю зарплату по всей компании.
+
+all_salary_in_company = []
+for every_depart in departments:
+    for one_employer in every_depart["employers"]:
+        all_salary_in_company.append(one_employer['salary_rub'])
+
+
+avg_salary_in_company = round(sum(all_salary_in_company)/len(all_salary_in_company), 1)
+print(f'Средняя зарплата в компании {avg_salary_in_company}')
+
+
+# Задание 10. Вывести названия должностей, которые получают больше 90к без повторений.
+
+position = []
+for every_depart in departments:
+    for one_employer in every_depart["employers"]:
+        if one_employer['salary_rub'] > 90000:
+            position.append(one_employer['position'])
+
+print(f'Должности, которые получают больше 90к {set(position)}')
+
+
+# Задание 11. Посчитать среднюю зарплату по каждому отделу среди девушек (их зовут Мишель, Николь, Кристина и Кейтлин).
+
+female_gender = {"Michelle", "Nicole", "Christina", "Caitlin"}
+for every_depart in departments:
+    name_depart = every_depart['title']
+    salary_in_depart = []
+    for one_employer in every_depart["employers"]:
+        if one_employer['first_name'] in female_gender:
+            salary_in_depart.append(one_employer['salary_rub'])
+    
+    avg_salary_in_depart = round(sum(salary_in_depart)/len(salary_in_depart), 1)
+    print(name_depart)
+    print(f'Средняя зарплата среди девушек {avg_salary_in_depart}')
+
+
+# Задание 12. Вывести без повторений имена людей, чьи фамилии заканчиваются на гласную букву.
+
+vowels = {'a', 'e', 'i', 'o', 'u', 'y'}
+name_people = []
+for every_depart in departments:
+    for one_employer in every_depart["employers"]:
+        if one_employer['last_name'][-1] in vowels:
+            name_people.append(one_employer['first_name'])
+print(set(name_people))
