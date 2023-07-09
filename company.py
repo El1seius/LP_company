@@ -154,7 +154,7 @@ print(f'Должности, которые получают больше 90к {s
 
 # Задание 11. Посчитать среднюю зарплату по каждому отделу среди девушек (их зовут Мишель, Николь, Кристина и Кейтлин).
 
-female_gender = {"Michelle", "Nicole", "Christina", "Caitlin"}
+female_name = {"Michelle", "Nicole", "Christina", "Caitlin"}
 for every_depart in departments:
     name_depart = every_depart['title']
     salary_in_depart = []
