@@ -159,7 +159,7 @@ for every_depart in departments:
     name_depart = every_depart['title']
     salary_in_depart = []
     for one_employer in every_depart["employers"]:
-        if one_employer['first_name'] in female_gender:
+        if one_employer['first_name'] in female_name:
             salary_in_depart.append(one_employer['salary_rub'])
     
     avg_salary_in_depart = round(sum(salary_in_depart)/len(salary_in_depart), 1)
@@ -176,3 +176,118 @@ for every_depart in departments:
         if one_employer['last_name'][-1] in vowels:
             name_people.append(one_employer['first_name'])
 print(set(name_people))
+
+
+# Задание 13. Вывести список отделов с суммарным налогом на сотрудников этого отдела.
+
+for every_depart in taxes:
+    if every_depart['department'] is None:
+        global_percent = every_depart['value_percents']
+
+for every_depart in taxes:
+    if every_depart['department'] is not None:
+        sum_tax_depart = global_percent + every_depart['value_percents']
+        print(f'В отделе {every_depart["department"]} суммарный налог на сотрудников {sum_tax_depart}%')
+
+
+# Задание 14. Вывести список всех сотредников с указанием зарплаты "на руки" и зарплаты с учётом налогов.
+
+
+def get_tax_depart(taxes):
+    tax_every_depart = {}
+    for every_depart in taxes: 
+        if every_depart['department'] is None:
+            global_percent = every_depart['value_percents']
+            tax_every_depart['unified'] = global_percent
+
+    for every_depart in taxes:
+        if every_depart['department'] is not None:
+            sum_tax_depart = global_percent + every_depart['value_percents']
+            tax_every_depart[every_depart['department'].lower()] = sum_tax_depart
+    return tax_every_depart
+
+
+for one_depart in departments:
+    name_department = one_depart['title'].lower()
+    tax_every_depart = get_tax_depart(taxes)
+    if name_department in set(tax_every_depart.keys()):
+        key_depart = name_department
+    else:
+        key_depart = 'unified'
+
+    print(name_department)
+    for every_employer in one_depart['employers']:
+        name = every_employer['first_name']
+        salary_row = every_employer['salary_rub']
+        salary_hand = salary_row * (100 - int(tax_every_depart.get(key_depart))) / 100
+        print(f'У {name} зарплата до вычета налога {salary_row}, зарплата "на руки" {salary_hand}')
+
+
+# Задание 15. Вывести список отделов с указанием месячной налоговой нагрузки – количеством денег, которые в месяц этот отдел платит налогами.
+
+for one_depart in departments:
+    name_department = one_depart['title'].lower()
+    tax_every_depart = get_tax_depart(taxes)
+    if name_department in set(tax_every_depart.keys()):
+        key_depart = name_department
+    else:
+        key_depart = 'unified'
+
+    all_salarys_in_depart = [every_employer['salary_rub'] for every_employer in one_depart['employers']]
+    sum_salarys_in_depart = sum(all_salarys_in_depart)
+    month_tax = sum_salarys_in_depart * int(tax_every_depart.get(key_depart))/100
+    print(f'В {name_department} месячная налоговая нагрузка составляет {round((month_tax), 1)}')
+
+
+# Задание 16. Вывести список отделов, отсортированный по месячной налоговой нагрузки.
+
+depart_with_tax = {}
+for one_depart in departments:
+    name_department = one_depart['title'].lower()
+    tax_every_depart = get_tax_depart(taxes)
+    if name_department in set(tax_every_depart.keys()):
+        key_depart = name_department
+    else:
+        key_depart = 'unified'
+
+    all_salarys_in_depart = [every_employer['salary_rub'] for every_employer in one_depart['employers']]
+    sum_salarys_in_depart = sum(all_salarys_in_depart)
+    month_tax = sum_salarys_in_depart * int(tax_every_depart.get(key_depart))/100
+    depart_with_tax[month_tax] = one_depart["title"]
+
+print(sorted(depart_with_tax.items()))
+
+
+# Задание 17. Вывести всех сотрудников, за которых компания платит больше 100к налогов в год.
+
+tax_every_depart = get_tax_depart(taxes)
+for one_depart in departments:
+    name_department = one_depart['title'].lower()
+    if name_department not in set(tax_every_depart.keys()):
+        tax_every_depart[name_department] = tax_every_depart.get('unified')
+
+    for every_employer in one_depart["employers"]:
+        tax_per_year = every_employer['salary_rub'] * 12 * tax_every_depart.get(name_department) / 100
+        if tax_per_year > 100000:
+            name = every_employer['first_name']
+            print(name)
+
+
+# Задание 18. Вывести имя и фамилию сотрудника, за которого компания платит меньше всего налогов.
+
+tax_every_depart = get_tax_depart(taxes)
+tax_in_comany = {}
+for one_depart in departments:
+    name_department = one_depart['title'].lower()
+    if name_department not in set(tax_every_depart.keys()):
+        tax_every_depart[name_department] = tax_every_depart.get('unified')
+
+    for every_employer in one_depart["employers"]:
+        tax_per_year = every_employer['salary_rub'] * 12 * tax_every_depart.get(name_department) / 100
+        first_name = every_employer['first_name']
+        last_name = every_employer['last_name']
+        tax_in_comany[tax_per_year] = f'{first_name} {last_name}'
+
+min_tax_in_comany = sorted(tax_in_comany)[0]
+name_employer_with_min_tax = tax_in_comany.get(min_tax_in_comany)
+print(name_employer_with_min_tax)
