@@ -207,9 +207,9 @@ def get_tax_depart(taxes):
     return tax_every_depart
 
 
+tax_every_depart = get_tax_depart(taxes)
 for one_depart in departments:
     name_department = one_depart['title'].lower()
-    tax_every_depart = get_tax_depart(taxes)
     if name_department in set(tax_every_depart.keys()):
         key_depart = name_department
     else:
@@ -219,15 +219,15 @@ for one_depart in departments:
     for every_employer in one_depart['employers']:
         name = every_employer['first_name']
         salary_row = every_employer['salary_rub']
-        salary_hand = salary_row * (100 - int(tax_every_depart.get(key_depart))) / 100
+        salary_hand = salary_row * (100 - int(tax_every_depart[key_depart])) / 100
         print(f'У {name} зарплата до вычета налога {salary_row}, зарплата "на руки" {salary_hand}')
 
 
 # Задание 15. Вывести список отделов с указанием месячной налоговой нагрузки – количеством денег, которые в месяц этот отдел платит налогами.
 
+tax_every_depart = get_tax_depart(taxes)
 for one_depart in departments:
     name_department = one_depart['title'].lower()
-    tax_every_depart = get_tax_depart(taxes)
     if name_department in set(tax_every_depart.keys()):
         key_depart = name_department
     else:
@@ -235,16 +235,16 @@ for one_depart in departments:
 
     all_salarys_in_depart = [every_employer['salary_rub'] for every_employer in one_depart['employers']]
     sum_salarys_in_depart = sum(all_salarys_in_depart)
-    month_tax = sum_salarys_in_depart * int(tax_every_depart.get(key_depart))/100
+    month_tax = sum_salarys_in_depart * int(tax_every_depart[key_depart])/100
     print(f'В {name_department} месячная налоговая нагрузка составляет {round((month_tax), 1)}')
 
 
 # Задание 16. Вывести список отделов, отсортированный по месячной налоговой нагрузки.
 
+tax_every_depart = get_tax_depart(taxes)
 depart_with_tax = {}
 for one_depart in departments:
     name_department = one_depart['title'].lower()
-    tax_every_depart = get_tax_depart(taxes)
     if name_department in set(tax_every_depart.keys()):
         key_depart = name_department
     else:
@@ -252,10 +252,10 @@ for one_depart in departments:
 
     all_salarys_in_depart = [every_employer['salary_rub'] for every_employer in one_depart['employers']]
     sum_salarys_in_depart = sum(all_salarys_in_depart)
-    month_tax = sum_salarys_in_depart * int(tax_every_depart.get(key_depart))/100
-    depart_with_tax[month_tax] = one_depart["title"]
-
-print(sorted(depart_with_tax.items()))
+    month_tax = sum_salarys_in_depart * int(tax_every_depart[key_depart])/100
+    depart_with_tax[one_depart["title"]] = month_tax
+    sorted_depart_with_tax = dict(sorted(depart_with_tax.items(), key=lambda item: item[1]))
+print(sorted_depart_with_tax)
 
 
 # Задание 17. Вывести всех сотрудников, за которых компания платит больше 100к налогов в год.
@@ -264,10 +264,10 @@ tax_every_depart = get_tax_depart(taxes)
 for one_depart in departments:
     name_department = one_depart['title'].lower()
     if name_department not in set(tax_every_depart.keys()):
-        tax_every_depart[name_department] = tax_every_depart.get('unified')
+        tax_every_depart[name_department] = tax_every_depart['unified']
 
     for every_employer in one_depart["employers"]:
-        tax_per_year = every_employer['salary_rub'] * 12 * tax_every_depart.get(name_department) / 100
+        tax_per_year = every_employer['salary_rub'] * 12 * tax_every_depart[name_department] / 100
         if tax_per_year > 100000:
             name = every_employer['first_name']
             print(name)
@@ -280,14 +280,13 @@ tax_in_comany = {}
 for one_depart in departments:
     name_department = one_depart['title'].lower()
     if name_department not in set(tax_every_depart.keys()):
-        tax_every_depart[name_department] = tax_every_depart.get('unified')
+        tax_every_depart[name_department] = tax_every_depart['unified']
 
     for every_employer in one_depart["employers"]:
-        tax_per_year = every_employer['salary_rub'] * 12 * tax_every_depart.get(name_department) / 100
+        tax_per_year = every_employer['salary_rub'] * 12 * tax_every_depart[name_department] / 100
         first_name = every_employer['first_name']
         last_name = every_employer['last_name']
-        tax_in_comany[tax_per_year] = f'{first_name} {last_name}'
+        tax_in_comany[f'{first_name} {last_name}'] = tax_per_year
 
-min_tax_in_comany = sorted(tax_in_comany)[0]
-name_employer_with_min_tax = tax_in_comany.get(min_tax_in_comany)
-print(name_employer_with_min_tax)
+min_tax_in_comany = min(tax_in_comany, key=lambda i: i[1])
+print(min_tax_in_comany)
